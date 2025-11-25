@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Agendamento</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="icon" type="image/png" href="https://img.icons8.com/fluency/48/000000/calendar.png">
+</head>
+<body>
+    <header style="text-align:center; margin-bottom:1.5rem;">
+        <h1 style="font-size:2rem; font-weight:700; color:#6366f1; margin-top:1rem; margin-bottom:0.5rem;">Sistema de Agendamento</h1>
+    </header>
+    <nav class="navbar">
+        <a href="/" class="navbar-brand">
+            📅 Sistema de Agendamento
+        </a>
+        <ul class="navbar-nav">
+            <li><a href="#" onclick="location.reload()">🏠 Início</a></li>
+        </ul>
+    </nav>
+
+    <div class="container" style="background:rgba(31,41,55,0.92); border-radius:14px; box-shadow:0 4px 24px rgba(0,0,0,0.18); padding:2.5rem 2rem; margin-bottom:2rem;">
+        <!-- ALERTS -->
+        <div id="alertContainer"></div>
+
+        <div style="display: flex; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap;">
+            <button class="btn btn-primary tab-btn active" data-tab="appointments">
+                📅 Agendamentos
+            </button>
+            <button class="btn btn-info tab-btn" data-tab="patients">
+                🏥 Pacientes
+            </button>
+            <button class="btn btn-success tab-btn" data-tab="rooms">
+                🏢 Salas
+            </button>
+            <button class="btn btn-warning tab-btn" data-tab="users">
+                👥 Usuários
+            </button>
+        </div>
+
+        <div id="appointments-tab" class="tab-content">
+            <div class="grid grid-2">
+                <div class="card">
+                    <div class="card-header">
+                        ➕ Novo Agendamento
+                    </div>
+                    <form id="appointmentForm" class="card-body">
+                        <div class="form-group">
+                            <label class="form-label">Observações</label>
+                            <textarea class="form-control" name="notes" rows="3" placeholder="Observações adicionais..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Paciente</label>
+                            <select class="form-control form-select" name="patient_id" required>
+                                <option value="">Selecione um paciente...</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Sala</label>
+                            <select class="form-control form-select" name="room_id" required>
+                                <option value="">Selecione uma sala...</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Estagiário</label>
+                            <select class="form-control form-select" name="student_id" required>
+                                <option value="">Selecione um estagiário...</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Supervisor (Profissional)</label>
+                            <select class="form-control form-select" name="supervisor_id" required>
+                                <option value="">Selecione um profissional...</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Data</label>
+                            <input type="date" class="form-control" name="appointment_date" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Hora Início</label>
+                            <input type="time" class="form-control" name="start_time" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Hora Fim</label>
+                            <input type="time" class="form-control" name="end_time" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">
+                            ✅ Criar Agendamento
+                        </button>
+                    </form>
+                </div>
+
+                <div>
+                    <div class="card">
+                        <div class="card-header">
+                            🔍 Filtrar
+                        </div>
+                        <div class="card-body">
+                            <input type="text" class="form-control" id="appointmentSearch" placeholder="Buscar por paciente ou sala...">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mt-3">
+                <div class="card-header">
+                    📋 Lista de Agendamentos
+                </div>
+                <div class="table-responsive">
+                    <table id="appointmentsTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Paciente</th>
+                                <th>Sala</th>
+                                <th>Data</th>
+                                <th>Horário</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="patients-tab" class="tab-content hidden">
+            <div class="grid grid-2">
+                <div class="card">
+                    <div class="card-header">
+                        ➕ Novo Paciente
+                    </div>
+                    <form id="patientForm" class="card-body">
+                        <div class="form-group">
+                            <label class="form-label">Nome</label>
+                            <input type="text" class="form-control" name="name" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" name="email" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Telefone</label>
+                            <input type="tel" class="form-control" name="phone">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Data de Nascimento</label>
+                            <input type="date" class="form-control" name="birthdate">
+                        </div>
+
+
+                        <div class="form-group">
+                            <label class="form-label">Observações</label>
+                            <textarea class="form-control" name="notes" rows="2" placeholder="Observações sobre o paciente..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">É Criança/Adolescente?</label>
+                            <select class="form-control form-select" name="is_child">
+                                <option value="false">Não</option>
+                                <option value="true">Sim</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-block">
+                            ✅ Criar Paciente
+                        </button>
+                    </form>
+                </div>
+
+                <div>
+                    <div class="card">
+                        <div class="card-header">
+                            🔍 Filtrar
+                        </div>
+                        <div class="card-body">
+                            <input type="text" class="form-control" id="patientSearch" placeholder="Buscar por nome ou email...">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mt-3">
+                <div class="card-header">
+                    📋 Lista de Pacientes
+                </div>
+                <div class="table-responsive">
+                    <table id="patientsTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nome</th>
+                                <th>Email</th>
+                                <th>Telefone</th>
+                                <th>Data Nascimento</th>
+                                <th>Observações</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="rooms-tab" class="tab-content hidden">
+            <div class="grid grid-2">
+                <div class="card">
+                    <div class="card-header">
+                        ➕ Nova Sala
+                    </div>
+                    <form id="roomForm" class="card-body">
+                        <div class="form-group">
+                            <label class="form-label">Nome</label>
+                            <input type="text" class="form-control" name="name" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Capacidade</label>
+                            <input type="number" class="form-control" name="capacity" min="1" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Localização/Descrição</label>
+                            <input type="text" class="form-control" name="description" placeholder="Ex: Bloco A, Andar 2">
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-block">
+                            ✅ Criar Sala
+                        </button>
+                    </form>
+                </div>
+
+                <div>
+                    <div class="card">
+                        <div class="card-header">
+                            🔍 Filtrar
+                        </div>
+                        <div class="card-body">
+                            <input type="text" class="form-control" id="roomSearch" placeholder="Buscar por nome ou número...">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mt-3">
+                <div class="card-header">
+                    📋 Lista de Salas
+                </div>
+                <div class="table-responsive">
+                    <table id="roomsTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nome</th>
+                                <th>Descrição</th>
+                                <th>Capacidade</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="users-tab" class="tab-content hidden">
+            <div class="grid grid-2">
+                <div class="card">
+                    <div class="card-header">
+                        ➕ Novo Usuário
+                    </div>
+                    <form id="userForm" class="card-body">
+                        <div class="form-group">
+                            <label class="form-label">Nome</label>
+                            <input type="text" class="form-control" name="name" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" name="email" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Senha</label>
+                            <input type="password" class="form-control" name="password" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Função</label>
+                            <select class="form-control form-select" name="role" required>
+                                <option value="">Selecione uma função...</option>
+                                <option value="admin">Administrador</option>
+                                <option value="professor">Professor</option>
+                                <option value="student">Estudante</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-block">
+                            ✅ Criar Usuário
+                        </button>
+                    </form>
+                </div>
+
+                <div>
+                    <div class="card">
+                        <div class="card-header">
+                            🔍 Filtrar
+                        </div>
+                        <div class="card-body">
+                            <input type="text" class="form-control" id="userSearch" placeholder="Buscar por nome ou email...">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mt-3">
+                <div class="card-header">
+                    📋 Lista de Usuários
+                </div>
+                <div class="table-responsive">
+                    <table id="usersTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nome</th>
+                                <th>Email</th>
+                                <th>Função</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p class="footer-text">© 2025 Sistema de Agendamento - Todos os direitos reservados</p>
+        <p class="footer-text">Versão 1.0.0  </p>
+    </footer>
+
+    <script src="assets/js/app.js"></script>
+</body>
+
+</html>
