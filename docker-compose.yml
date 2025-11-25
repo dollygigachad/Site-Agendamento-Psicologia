@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=false
+      - LOG_LEVEL=INFO
+      - SECRET_KEY=sua-chave-secreta-muito-segura-em-producao
+    volumes:
+      - ./backend:/app/backend
+      - ./agendamentotcc.db:/app/agendamentotcc.db
+    command: uvicorn backend.main:app --host 0.0.0.0 --port 8000 --reload
+    restart: unless-stopped
+
+  # Frontend é estático; em produção use GitHub Pages
+  # Para desenvolvimento local, serve com: python -m http.server 3000 --directory frontend
