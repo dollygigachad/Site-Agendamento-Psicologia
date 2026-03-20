@@ -223,7 +223,7 @@ pytest -v --tb=short
 
 ---
 
-**Desenvolvido por:** Assistente AI  
+
 **Versão:** 1.0  
 **Status:** 🟢 Production Ready  
 **Data:** 23 de novembro de 2025
